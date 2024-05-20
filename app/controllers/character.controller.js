@@ -5,13 +5,13 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Character
 exports.create = (req, res) => {
   // Validate request
-  if (req.body.character === undefined) {
+  if (req.body.name === undefined) {
     const error = new Error("Character cannot be empty!");
     error.statusCode = 400;
     throw error;
   } 
 
-  // Create a Genre
+  // Create a Character
   const character = {
     character: req.body.character,
   };
