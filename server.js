@@ -7,7 +7,17 @@ const app = express();
 
 const db = require("./app/models");
 
-db.sequelize.sync();
+//db.sequelize.sync();
+const run = async () => {
+
+};
+
+// db.sequelize.sync();
+//TODO:  This is for development purposes only.  
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+  run();
+});
 
 var corsOptions = {
   origin: "http://localhost:8081",
