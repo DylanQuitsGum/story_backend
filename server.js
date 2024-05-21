@@ -10,7 +10,6 @@ const db = require("./app/models");
 const CharacterController = require('./app/controllers/character.controller.js');
 const GenreController = require('./app/controllers/genre.controller.js');
 
-//db.sequelize.sync();
 const run = async () => {
   const greg = await CharacterController.create({
     firstName: "Greg",
