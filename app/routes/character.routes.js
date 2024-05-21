@@ -8,7 +8,7 @@ module.exports = (app) => {
   
     // Retrieve all Characters for user
     router.get(
-      "/recipes/user/:userId",
+      "/characters/user/:userId",
       [authenticateRoute],
       Character.findAllForUser
     );

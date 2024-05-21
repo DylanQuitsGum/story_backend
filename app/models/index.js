@@ -79,6 +79,17 @@ db.character.belongsTo(
   { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
 );
 
+db.user.hasMany(
+  db.genre,
+  { as: "genre" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.genre.belongsTo(
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
+);
+
 // foreign key for recipe
 db.user.hasMany(
   db.recipe,
