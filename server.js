@@ -8,12 +8,25 @@ const app = express();
 const db = require("./app/models");
 
 const CharacterController = require('./app/controllers/character.controller.js');
+const GenreController = require('./app/controllers/genre.controller.js');
 
 //db.sequelize.sync();
 const run = async () => {
-  const character1 = await CharacterController.create({
-    firstName: 'Greg',
-    lastName: 'Satterlee',
+  const greg = await CharacterController.create({
+    firstName: "Greg",
+    lastName: "Satterlee",
+  });
+
+  const fantasyGenre = await GenreController.create({
+    genre: "Fantasy",
+  });
+
+  const horrorGenre = await GenreController.create({
+    genre: "Horror",
+  });
+
+  const adventureGenre = await GenreController.create({
+    genre: "Adventure",
   });
 };
 
