@@ -52,11 +52,7 @@ db.story.belongsTo(
   { as: "user" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
-db.story.belongsTo(
-  db.genre,
-  { as: "genre" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
+
 db.story.hasMany(
   db.storyCharacter,
   { as: "storyCharacter" },
