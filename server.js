@@ -9,9 +9,51 @@ const db = require("./app/models");
 
 const CharacterController = require('./app/controllers/character.controller.js');
 const GenreController = require('./app/controllers/genre.controller.js');
+const CountryController = require('./app/controllers/country.controller.js');
+const ThemeController = require('./app/controllers/theme.controller.js');
+const LanguageController = require('./app/controllers/language.controller.js');
+const { language } = require("googleapis/build/src/apis/language/index.js");
 
 const run = async () => {
+  const englishLanguage = LanguageController.create({
+    language: "English",
+  });
 
+  const spanishLanguage = LanguageController.create({
+    language: "Spanish",
+  });
+
+  const germanLanguage = LanguageController.create({
+    language: "German",
+  });
+
+  const frenchLanguage = LanguageController.create({
+    language: "French",
+  });
+
+  const darkTheme = ThemeController.create({
+    theme: "Dark",
+  });
+
+  const lightTheme = ThemeController.create({
+    theme: "Light",
+  });
+
+  const usCountry = CountryController.create({
+    country: "United States",
+  });
+
+  const horrorGenre = GenreController.create({
+    genre: "Horror",
+  });
+
+  const adventureGenre = GenreController.create({
+    genre: "Adventure",
+  });
+
+  const fantasyGenre = GenreController.create({
+    genre: "Fantasy",
+  });
 };
 
 // db.sequelize.sync();
@@ -44,10 +86,14 @@ require("./app/routes/ingredient.routes")(app);
 require("./app/routes/recipe.routes")(app);
 require("./app/routes/recipeStep.routes")(app);
 require("./app/routes/recipeIngredient.routes")(app);
+
 require("./app/routes/user.routes")(app);
+require("./app/routes/country.routes.js")(app);
+require("./app/routes/genre.routes.js")(app);
+require("./app/routes/theme.routes.js")(app);
+require("./app/routes/language.routes.js")(app);
 
 require("./app/routes/character.routes.js")(app)
-require("./app/routes/genre.routes.js")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;

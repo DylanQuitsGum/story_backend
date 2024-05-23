@@ -16,6 +16,10 @@ db.sequelize = sequelize;
 
 db.character = require("./character.model.js")(sequelize, Sequelize);
 db.genre = require("./genre.model.js")(sequelize, Sequelize);
+db.country = require("./country.model.js")(sequelize, Sequelize);
+db.language = require("./language.model.js")(sequelize, Sequelize);
+db.theme = require("./theme.model.js")(sequelize, Sequelize);
+
 db.story = require("./story.model.js")(sequelize, Sequelize);
 db.storyCharacter = require("./storyCharacter.model.js")(sequelize, Sequelize);
 db.session = require("./session.model.js")(sequelize, Sequelize);
@@ -70,17 +74,6 @@ db.user.hasMany(
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 db.character.belongsTo(
-  db.user,
-  { as: "user" },
-  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
-);
-
-db.user.hasMany(
-  db.genre,
-  { as: "genre" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.genre.belongsTo(
   db.user,
   { as: "user" },
   { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
