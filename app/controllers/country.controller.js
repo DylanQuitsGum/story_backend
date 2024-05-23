@@ -10,14 +10,18 @@ exports.create = (country) => {
       });
   };
 
-exports.findAll = () => {
-  return Country.findAll({
-
-  })
-  .then((countries) => {
-    return countries;
-  })
-  .catch((err) => {
-    console.log(">> Error retrieving countries: ", err);
-  });
-};
+  exports.findAll = (req, res) => {
+    const country = req.query.language;
+    var condition = country ? { country: { [Op.like]: `%${country}%` } } : null;
+  
+    Country.findAll({ where: condition })
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving countries."
+        });
+      });
+  };

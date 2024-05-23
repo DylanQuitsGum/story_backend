@@ -10,14 +10,18 @@ exports.create = (language) => {
       });
   };
 
-  exports.findAll = () => {
-    return Language.findAll({
+  exports.findAll = (req, res) => {
+    const language = req.query.language;
+    var condition = language ? { language: { [Op.like]: `%${language}%` } } : null;
   
-    })
-    .then((languages) => {
-      return languages;
-    })
-    .catch((err) => {
-      console.log(">> Error retrieving languages: ", err);
-    });
+    Language.findAll({ where: condition })
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving languages."
+        });
+      });
   };

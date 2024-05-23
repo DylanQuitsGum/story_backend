@@ -10,14 +10,18 @@ exports.create = (genre) => {
       });
   };
 
-  exports.findAll = () => {
-    return Genre.findAll({
+  exports.findAll = (req, res) => {
+    const genre = req.query.genre;
+    var condition = genre ? { genre: { [Op.like]: `%${genre}%` } } : null;
   
-    })
-    .then((genres) => {
-      return genres;
-    })
-    .catch((err) => {
-      console.log(">> Error retrieving genres: ", err);
-    });
+    Genre.findAll({ where: condition })
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving genres."
+        });
+      });
   };

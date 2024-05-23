@@ -14,14 +14,18 @@ exports.create = (theme) => {
       });
   };
 
-  exports.findAll = () => {
-    return Theme.findAll({
+  exports.findAll = (req, res) => {
+    const theme = req.query.theme;
+    var condition = theme ? { theme: { [Op.like]: `%${theme}%` } } : null;
   
-    })
-    .then((themes) => {
-      return themes;
-    })
-    .catch((err) => {
-      console.log(">> Error retrieving themes: ", err);
-    });
+    Theme.findAll({ where: condition })
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving themes."
+        });
+      });
   };
