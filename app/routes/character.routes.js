@@ -1,45 +1,25 @@
-module.exports = (app) => {
-    const Character = require("../controllers/character.controller.js");
-    const { authenticateRoute } = require("../authentication/authentication");
-    var router = require("express").Router();
-  
-    // Create a new Character
-    router.post("/characters/", [authenticateRoute], Character.create);
-  
-    // Retrieve all Characters for user
-    router.get(
-      "/characters/user/:userId",
-      [authenticateRoute],
-      Character.findAllForUser
-    );
+module.exports = app => {
+  const characters = require("../controllers/character.controller.js");
 
-};
+  var router = require("express").Router();
 
-exports.findAllForUser = (req, res) => {
-  const userId = req.params.userId;
-  Character.findAll({
-    where: { userId: userId },
-    include: [
-      {
-        model: StoryCharacter,
-        as: "storyCharacter",
-        required: false,
-      },
-    ],
-  })
-    .then((data) => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Characters for user with id=${userId}.`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Error retrieving Characters for user with id=" + userId,
-      });
-    });
+  // Create a new Character
+  router.post("/", characters.create);
+
+  // Retrieve all Characters
+  router.get("/", characters.findAll);
+
+  // Retrieve a single Character with id
+  router.get("/:id", characters.findOne);
+
+  // Update a Character with id
+  router.put("/:id", characters.update);
+
+  // Delete a Character with id
+  router.delete("/:id", characters.delete);
+
+  // Delete all Characters
+  router.delete("/", characters.deleteAll);
+
+  app.use('/storyapi/characters', router);
 };

@@ -11,10 +11,6 @@ const CharacterController = require('./app/controllers/character.controller.js')
 const GenreController = require('./app/controllers/genre.controller.js');
 
 const run = async () => {
-  const greg = await CharacterController.create({
-    firstName: "Greg",
-    lastName: "Satterlee",
-  });
 
   const fantasyGenre = await GenreController.create({
     genre: "Fantasy",
@@ -51,7 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the recipe backend." });
+  res.json({ message: "Welcome to the story backend." });
 });
 
 require("./app/routes/auth.routes.js")(app);
@@ -60,6 +56,8 @@ require("./app/routes/recipe.routes")(app);
 require("./app/routes/recipeStep.routes")(app);
 require("./app/routes/recipeIngredient.routes")(app);
 require("./app/routes/user.routes")(app);
+
+require("./app/routes/character.routes.js")(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
