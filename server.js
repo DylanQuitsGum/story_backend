@@ -12,17 +12,6 @@ const GenreController = require('./app/controllers/genre.controller.js');
 
 const run = async () => {
 
-  const fantasyGenre = await GenreController.create({
-    genre: "Fantasy",
-  });
-
-  const horrorGenre = await GenreController.create({
-    genre: "Horror",
-  });
-
-  const adventureGenre = await GenreController.create({
-    genre: "Adventure",
-  });
 };
 
 // db.sequelize.sync();
@@ -58,6 +47,7 @@ require("./app/routes/recipeIngredient.routes")(app);
 require("./app/routes/user.routes")(app);
 
 require("./app/routes/character.routes.js")(app)
+require("./app/routes/genre.routes.js")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
