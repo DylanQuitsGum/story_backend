@@ -14,6 +14,17 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+db.character = require("./character.model.js")(sequelize, Sequelize);
+db.genre = require("./genre.model.js")(sequelize, Sequelize);
+db.country = require("./country.model.js")(sequelize, Sequelize);
+db.language = require("./language.model.js")(sequelize, Sequelize);
+db.theme = require("./theme.model.js")(sequelize, Sequelize);
+
+db.story = require("./story.model.js")(sequelize, Sequelize);
+db.storyCharacter = require("./storyCharacter.model.js")(sequelize, Sequelize);
+db.session = require("./session.model.js")(sequelize, Sequelize);
+db.user = require("./user.model.js")(sequelize, Sequelize);
+
 db.ingredient = require("./ingredient.model.js")(sequelize, Sequelize);
 db.recipe = require("./recipe.model.js")(sequelize, Sequelize);
 db.recipeStep = require("./recipeStep.model.js")(sequelize, Sequelize);
@@ -21,8 +32,6 @@ db.recipeIngredient = require("./recipeIngredient.model.js")(
   sequelize,
   Sequelize
 );
-db.session = require("./session.model.js")(sequelize, Sequelize);
-db.user = require("./user.model.js")(sequelize, Sequelize);
 
 // foreign key for session
 db.user.hasMany(
@@ -34,6 +43,40 @@ db.session.belongsTo(
   db.user,
   { as: "user" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+
+//foreign key for story
+db.user.hasMany(
+  db.story,
+  { as: "story" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.story.belongsTo(
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+
+db.story.hasMany(
+  db.storyCharacter,
+  { as: "storyCharacter" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.character.hasMany(
+  db.storyCharacter,
+  { as: "storyCharacter" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+
+db.user.hasMany(
+  db.character,
+  { as: "character" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.character.belongsTo(
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
 );
 
 // foreign key for recipe
