@@ -12,7 +12,6 @@ const GenreController = require('./app/controllers/genre.controller.js');
 const CountryController = require('./app/controllers/country.controller.js');
 const ThemeController = require('./app/controllers/theme.controller.js');
 const LanguageController = require('./app/controllers/language.controller.js');
-const { language } = require("googleapis/build/src/apis/language/index.js");
 
 const run = async () => {
   const englishLanguage = LanguageController.create({
@@ -56,7 +55,6 @@ const run = async () => {
   });
 };
 
-// db.sequelize.sync();
 //TODO:  This is for development purposes only.  
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
@@ -82,10 +80,6 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/auth.routes.js")(app);
-require("./app/routes/ingredient.routes")(app);
-require("./app/routes/recipe.routes")(app);
-require("./app/routes/recipeStep.routes")(app);
-require("./app/routes/recipeIngredient.routes")(app);
 
 require("./app/routes/user.routes")(app);
 require("./app/routes/country.routes.js")(app);
