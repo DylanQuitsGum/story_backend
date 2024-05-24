@@ -8,6 +8,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT('MEDIUMTEXT'),
         allowNull: false,
       },
+      conversationId: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
     });
     return Story;
   };
