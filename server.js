@@ -7,11 +7,13 @@ const app = express();
 
 const db = require("./app/models");
 
-const CharacterController = require('./app/controllers/character.controller.js');
-const GenreController = require('./app/controllers/genre.controller.js');
-const CountryController = require('./app/controllers/country.controller.js');
-const ThemeController = require('./app/controllers/theme.controller.js');
-const LanguageController = require('./app/controllers/language.controller.js');
+console.log("testing123");
+
+const CharacterController = require("./app/controllers/character.controller.js");
+const GenreController = require("./app/controllers/genre.controller.js");
+const CountryController = require("./app/controllers/country.controller.js");
+const ThemeController = require("./app/controllers/theme.controller.js");
+const LanguageController = require("./app/controllers/language.controller.js");
 
 const run = async () => {
   const englishLanguage = LanguageController.create({
@@ -55,7 +57,7 @@ const run = async () => {
   });
 };
 
-//TODO:  This is for development purposes only.  
+//TODO:  This is for development purposes only.
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
   run();
@@ -87,7 +89,7 @@ require("./app/routes/genre.routes.js")(app);
 require("./app/routes/theme.routes.js")(app);
 require("./app/routes/language.routes.js")(app);
 
-require("./app/routes/character.routes.js")(app)
+require("./app/routes/character.routes.js")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
