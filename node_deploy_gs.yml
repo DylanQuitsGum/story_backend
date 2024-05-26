@@ -1,6 +1,7 @@
 
 name: AWS(GS) DEPLOY TO STAGING
 # turn off deploy to AWS
+environment: staging
 
 on:
   pull_request:
