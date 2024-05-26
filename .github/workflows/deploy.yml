@@ -39,25 +39,8 @@ jobs:
           ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
           cd backend
           touch working2.txt
-          pm2 restart server.js
+          npm install
+          pm2 restart server.js || pm2 start server.js
           exit
           '
           rm key.pem
-
-      # - name: Restart nodejs server
-      #   env:
-      #     EC2_USER: ${{ secrets.EC2_USER }}
-      #     EC2_HOST: ${{ secrets.EC2_HOST }}
-      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      #   run: |
-      #     echo "$SSH_PRIVATE_KEY" > key.pem
-      #     chmod 600 key.pem
-
-      #     ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
-      #     cd backend
-      #     touch working2.txt
-      #     pm2 restart server.js
-      #     exit
-      #     '
-      #     rm key.pem
