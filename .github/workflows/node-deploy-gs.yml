@@ -1,4 +1,5 @@
-name: AWS DEPLOY TO STAGING
+
+name: AWS(GS) DEPLOY TO STAGING
 # turn off deploy to AWS
 
 on:
@@ -40,9 +41,9 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
           ARGS: "-rltgoDzvO --delete"
           SOURCE: "deploy/"
-          REMOTE_HOST: "recipe.eaglesoftwareteam.com"
+          REMOTE_HOST: "ec2-3-16-150-116.us-east-2.compute.amazonaws.com"
           REMOTE_USER: ubuntu
-          TARGET: "nodeapps/recipe-backend"
+          TARGET: "nodeapps/story-backend"
       - name: Execute SSH commmands on remote server
         uses: JimCronqvist/action-ssh@master
         env:
@@ -52,9 +53,9 @@ jobs:
           privateKey: ${{ secrets.SERVER_SSH_KEY }}
           debug: false
           command: |
-            cd nodeapps/recipe-backend
+            cd nodeapps/story-backend
             npm install
-            sudo systemctl stop recipe-backend
-            sudo cp recipe-backend.service /lib/systemd/system/recipe-backend.service
+            sudo systemctl stop story-backend
+            sudo cp story-backend.service /lib/systemd/system/story-backend.service
             sudo systemctl daemon-reload
-            sudo systemctl start recipe-backend
+            sudo systemctl start story-backend
