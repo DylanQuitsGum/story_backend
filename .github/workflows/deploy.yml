@@ -35,10 +35,9 @@ jobs:
           chmod 600 key.pem
           scp -i key.pem -o StrictHostKeyChecking=no -r ./* $EC2_USER@$EC2_HOST:/home/ec2-user/backend
 
-          ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+          ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
             cd backend
-            pm2 restart server.js
-            exit
-          EOF
+            touch working.text
+          '
 
           rm key.pem
