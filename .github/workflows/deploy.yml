@@ -33,12 +33,10 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem
           chmod 600 key.pem
-          touch working.txt
           rsync -avz --exclude 'node_modules' -e "ssh -o StrictHostKeyChecking=no -i key.pem" . $EC2_USER@$EC2_HOST:/home/ec2-user/backend
 
           ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
           cd backend
-          touch working2.txt
           npm install
           pm2 restart server.js || pm2 start server.js
           exit
