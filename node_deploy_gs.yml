@@ -1,5 +1,5 @@
 
-name: AWS DEPLOY TO STAGING
+name: AWS(GS) DEPLOY TO STAGING
 # turn off deploy to AWS
 
 on:
