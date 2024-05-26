@@ -33,23 +33,25 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem
           chmod 600 key.pem
-          scp -i key.pem -o StrictHostKeyChecking=no -r ./* $EC2_USER@$EC2_HOST:/home/ec2-user/backend
+          touch working.txt
+          rsync -avz --exclude 'node_modules' -e "ssh -o StrictHostKeyChecking=no -i key.pem" . $EC2_USER@$EC2_HOST:/home/ec2-user/backend
+
           rm key.pem
 
-      - name: Restart nodejs server
-        env:
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      # - name: Restart nodejs server
+      #   env:
+      #     EC2_USER: ${{ secrets.EC2_USER }}
+      #     EC2_HOST: ${{ secrets.EC2_HOST }}
+      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-        run: |
-          echo "$SSH_PRIVATE_KEY" > key.pem
-          chmod 600 key.pem
+      #   run: |
+      #     echo "$SSH_PRIVATE_KEY" > key.pem
+      #     chmod 600 key.pem
 
-          ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST ' 
-          cd backend
-          touch working2.txt
-          pm2 restart server.js
-          exit
-          '
-          rm key.pem
+      #     ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
+      #     cd backend
+      #     touch working2.txt
+      #     pm2 restart server.js
+      #     exit
+      #     '
+      #     rm key.pem
