@@ -61,15 +61,7 @@ db.sequelize.sync({ force: true }).then(() => {
   run();
 });
 
-if (process.env.NODE_ENV === "development") {
-  app.use(cors());
-} else {
-  const corsOptions = {
-    origin: "http://107.23.63.118/",
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  };
-  app.use(cors(corsOptions));
-}
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
