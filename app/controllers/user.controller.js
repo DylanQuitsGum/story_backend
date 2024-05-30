@@ -46,7 +46,7 @@ exports.create = async (req, res) => {
   console.log("acccount", account);
 
   if (account) {
-    res.send({ message: "Email already in error" });
+    return res.status(400).send({ message: "Email already exist" });
   }
 
   const hashedPassword = await encryptPassword(password);
