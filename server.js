@@ -7,8 +7,6 @@ const app = express();
 
 const db = require("./app/models");
 
-console.log("testing123");
-
 const CharacterController = require("./app/controllers/character.controller.js");
 const GenreController = require("./app/controllers/genre.controller.js");
 const CountryController = require("./app/controllers/country.controller.js");
@@ -63,12 +61,7 @@ db.sequelize.sync({ force: true }).then(() => {
   run();
 });
 
-var corsOptions = {
-  origin: "http://localhost:8081",
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors());
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());

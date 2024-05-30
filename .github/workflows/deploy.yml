@@ -27,10 +27,6 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PW: ${{ secrets.DB_PW }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_NAME: ${{ secrets.DB_NAME }}
 
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem
@@ -39,13 +35,6 @@ jobs:
 
           ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
           cd backend
-
-          touch .env
-          echo DB_HOST = "$DB_HOST" > .env
-          echo DB_PW = "$DB_PW" >> .env
-          echo DB_USER = "$DB_USER" >> .env
-          echo DB_NAME = "$DB_NAME" >> .env
-
           npm install
           pm2 restart server.js || pm2 start server.js
           exit
