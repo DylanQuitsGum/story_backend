@@ -3,7 +3,7 @@ const SALT_ROUNDS = 10;
 
 async function encryptPassword(plainTextPassword) {
   try {
-    return await bcrypt.hash(plainTextPassword, SALT_ROUNDS); // 10 is the salt rounds
+    return await bcrypt.hash(plainTextPassword, SALT_ROUNDS);
   } catch (error) {
     throw new Error("Error hashing password");
   }

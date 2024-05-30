@@ -1,8 +1,7 @@
 const db = require("../models");
 const { comparePassword } = require("../authentication/password-manager");
-const { generateJWT } = require("./../authentication/jwt-manager");
+const { generateJWT } = require("./../authentication/authentication");
 const User = db.user;
-const Session = db.session;
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;

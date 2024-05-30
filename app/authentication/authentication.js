@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const secretKey = process.env.JWT_SECRET_KEY;
 
 function isAuthorized(req, res, next) {
-  console.log("req", req.headers);
   const authorizationHeader = req.headers.authorization;
 
   let token = undefined;
@@ -10,14 +9,11 @@ function isAuthorized(req, res, next) {
     token = authorizationHeader.slice(7); // Remove "Bearer " prefix
   }
 
-  console.log("token", token);
-
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
   jwt.verify(token, secretKey, (err, decoded) => {
-    console.log("decoded", decoded);
     if (err) {
       return res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
@@ -26,6 +22,22 @@ function isAuthorized(req, res, next) {
   });
 }
 
+function generateJWT(user) {
+  const { id, email } = user;
+
+  const payload = {
+    userId: id,
+    email: email,
+  };
+
+  const options = {
+    expiresIn: "1h", //expire in hour
+  };
+
+  return jwt.sign(payload, secretKey, options);
+}
+
 module.exports = {
   isAuthorized,
+  generateJWT,
 };

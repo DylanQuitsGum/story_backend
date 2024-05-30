@@ -1,14 +1,11 @@
 const db = require("../models");
 const User = db.user;
 const Op = db.Sequelize.Op;
-// const { encrypt, getSalt, hashPassword } = require("../authentication/crypto");
 const { encryptPassword } = require("./../authentication/password-manager");
-const { generateJWT } = require("./../authentication/jwt-manager");
+const { generateJWT } = require("./../authentication/authentication");
 
 // Create and Save a new User
 exports.create = async (req, res) => {
-  console.log(req.body);
-
   const { firstName, lastName, email, password } = req.body;
 
   // Validate request
@@ -71,7 +68,6 @@ exports.create = async (req, res) => {
     token: token,
   };
 
-  console.log(userInfo);
   res.send(userInfo);
 };
 
