@@ -35,7 +35,6 @@ jobs:
 
           ssh -i key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
           cd backend
-
           npm install
           pm2 restart server.js || pm2 start server.js
           exit
