@@ -14,7 +14,7 @@ exports.login = async (req, res) => {
     },
   });
 
-  if (!account) {
+  if (!account || !password) {
     return res
       .status(400)
       .send({ message: "Incorrect email or password, please try again." });
@@ -40,5 +40,5 @@ exports.login = async (req, res) => {
     token: token,
   };
 
-  return res.send(userInfo);
+  return res.status(200).send(userInfo);
 };
