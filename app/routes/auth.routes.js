@@ -1,13 +1,7 @@
 module.exports = (app) => {
-  const auth = require("../controllers/auth.controller.js");
-
+  const { login, logout } = require("../controllers/auth.controller.js");
   var router = require("express").Router();
 
-  // Login
-  router.post("/login", auth.login);
-
-  // Logout
-  router.post("/logout", auth.logout);
-
+  router.post("/login", login);
   app.use("/storyapi", router);
 };
