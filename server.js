@@ -1,4 +1,6 @@
 require("dotenv").config();
+const mysql = require('mysql2');
+const fs = require('fs');
 
 const express = require("express");
 const cors = require("cors");
@@ -13,51 +15,35 @@ const CountryController = require("./app/controllers/country.controller.js");
 const ThemeController = require("./app/controllers/theme.controller.js");
 const LanguageController = require("./app/controllers/language.controller.js");
 
+
+
 const run = async () => {
-  const englishLanguage = LanguageController.create({
-    language: "English",
-  });
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PW,
+  database: process.env.DB_NAME,
+  multipleStatements: true,
+});
 
-  const spanishLanguage = LanguageController.create({
-    language: "Spanish",
-  });
+connection.connect((err) => {
+  console.log('Connecting');
 
-  const germanLanguage = LanguageController.create({
-    language: "German",
-  });
+  if(err) return console.error(err.message);
 
-  const frenchLanguage = LanguageController.create({
-    language: "French",
-  });
+  console.log('Connected');
 
-  const darkTheme = ThemeController.create({
-    theme: "Dark",
-  });
+  let sql = Buffer.from( fs.readFileSync("./db/seeding.sql")).toString('ascii');
 
-  const lightTheme = ThemeController.create({
-    theme: "Light",
-  });
+  connection.query(sql, [true]);
 
-  const usCountry = CountryController.create({
-    country: "United States",
-  });
+  connection.end();
+});
 
-  const horrorGenre = GenreController.create({
-    genre: "Horror",
-  });
-
-  const adventureGenre = GenreController.create({
-    genre: "Adventure",
-  });
-
-  const fantasyGenre = GenreController.create({
-    genre: "Fantasy",
-  });
 };
 
-//TODO:  This is for development purposes only.
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
+db.sequelize.sync().then(() => {
+  console.log("re-sync db.");
   run();
 });
 
