@@ -1,6 +1,6 @@
 module.exports = (app) => {
   const User = require("../controllers/user.controller.js");
-  const { authenticateRoute } = require("../authentication/authentication");
+  const { isAuthorized } = require("../authentication/authentication");
   var router = require("express").Router();
 
   // Create a new User
@@ -13,13 +13,13 @@ module.exports = (app) => {
   router.get("/users/:id", User.findOne);
 
   // Update a User with id
-  router.put("/users/:id", [authenticateRoute], User.update);
+  router.put("/users/:id", [isAuthorized], User.update);
 
   // Delete a User with id
-  router.delete("/users/:id", [authenticateRoute], User.delete);
+  router.delete("/users/:id", [isAuthorized], User.delete);
 
   // Delete all User
-  router.delete("/users/", [authenticateRoute], User.deleteAll);
+  router.delete("/users/", [isAuthorized], User.deleteAll);
 
   app.use("/storyapi", router);
 };

@@ -16,12 +16,6 @@ exports.create = (req, res) => {
     });
     return;
   }
-  if (!req.body.role) {
-    res.status(400).send({
-      message: "Last Name can not be empty!"
-    });
-    return;
-  }
 
   // Create a Character
   const character = {

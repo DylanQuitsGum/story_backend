@@ -1,4 +1,6 @@
-module.exports = app => {
+const { isAuthorized } = require("../authentication/authentication");
+
+module.exports = (app) => {
   const characters = require("../controllers/character.controller.js");
 
   var router = require("express").Router();
@@ -21,5 +23,5 @@ module.exports = app => {
   // Delete all Characters
   router.delete("/", characters.deleteAll);
 
-  app.use('/storyapi/characters', router);
+  app.use("/storyapi/characters", [isAuthorized], router);
 };
