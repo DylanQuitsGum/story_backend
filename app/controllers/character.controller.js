@@ -39,10 +39,11 @@ exports.create = (req, res) => {
 
 // Retrieve all Characters from the database.
 exports.findAll = (req, res) => {
-  const firstName = req.query.firstName;
-  var condition = firstName ? { firstName: { [Op.like]: `%${firstName}%` } } : null;
+  const userId = req.body.userId;
+  var condition = userId ? { userId: `${userId}` } : null;
 
-  Character.findAll({ where: condition })
+  Character.findAll({ 
+    where: condition })
     .then(data => {
       res.send(data);
     })
