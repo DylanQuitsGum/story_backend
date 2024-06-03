@@ -7,5 +7,5 @@ module.exports = (app) => {
 
   router.get("/", genres.findAll);
 
-  app.use("/storyapi/genres", [isAuthorized], router);
+  app.use("/api/genres", [isAuthorized], router);
 };
