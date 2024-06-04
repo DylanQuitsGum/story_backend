@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Story
 exports.create = (req, res) => {
-  const { story, conversationId, title } = req.body;
+  const { story, conversationId, title, userId } = req.body;
 
   // Validate request
   if (!story || !title) {
@@ -20,6 +20,7 @@ exports.create = (req, res) => {
     text: story,
     conversationId,
     title,
+    userId: userId,
   };
 
   // Save Story in the database
@@ -35,26 +36,27 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve all Genres from the database.
-exports.findAll = (req, res) => {
-  const story = req.query.storyId;
-  var condition = storyId
-    ? {
-        id: {
-          [Op.like]: `%${storyId}%`,
-        },
-      }
-    : null;
+// Retrieve all Stories
+exports.findAll = async (req, res) => {
+  const id = req.params.id;
 
-  Story.findAll({ where: condition, order: [["story", "ASC"]] })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving stories.",
-      });
+  try {
+    const stories = await Story.findAll({
+      where: {
+        userId: {
+          [Op.eq]: id,
+        },
+      },
     });
+
+    if (stories) {
+      return res.status(200).send(stories);
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server Error: ${err}`,
+    });
+  }
 };
 
 // Find a single Story with an id

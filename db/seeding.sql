@@ -137,3 +137,7 @@ WHERE NOT EXISTS (SELECT 1 FROM languages WHERE language = 'French');
 INSERT INTO languages (language, createdAt, updatedAt) 
 SELECT 'Spanish', NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM languages WHERE language = 'Spanish');
+
+INSERT INTO languages (language, createdAt, updatedAt) 
+SELECT 'Vietnamese', NOW(), NOW()
+WHERE NOT EXISTS (SELECT 1 FROM languages WHERE language = 'Vietnamese');
