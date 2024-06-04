@@ -24,38 +24,38 @@ db.story = require("./story.model.js")(sequelize, Sequelize);
 db.storyCharacter = require("./storyCharacter.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 
-//foreign key for story
-// db.user.hasMany(
-//   db.story,
-//   { as: "story" },
-//   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-// );
-// db.story.belongsTo(
-//   db.user,
-//   { as: "user" },
-//   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-// );
+// foreign key for story
+db.user.hasMany(
+  db.story,
+  { as: "story" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.story.belongsTo(
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
 
-// db.story.hasMany(
-//   db.storyCharacter,
-//   { as: "storyCharacter" },
-//   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-// );
-// db.character.hasMany(
-//   db.storyCharacter,
-//   { as: "storyCharacter" },
-//   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-// );
+db.story.hasMany(
+  db.storyCharacter,
+  { as: "storyCharacter" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.character.hasMany(
+  db.storyCharacter,
+  { as: "storyCharacter" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
 
-// db.user.hasMany(
-//   db.character,
-//   { as: "character" },
-//   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-// );
-// db.character.belongsTo(
-//   db.user,
-//   { as: "user" },
-//   { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
-// );
+db.user.hasMany(
+  db.character,
+  { as: "character" },
+  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+);
+db.character.belongsTo(
+  db.user,
+  { as: "user" },
+  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
+);
 
 module.exports = db;
