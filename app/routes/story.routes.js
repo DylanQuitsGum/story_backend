@@ -6,6 +6,9 @@ module.exports = (app) => {
   // Create a new Story
   router.post("/", stories.createStory);
 
+  // Save story
+  router.post("/save", stories.create);
+
   // Retrieve all Stories
   router.get("/", stories.findAll);
 
