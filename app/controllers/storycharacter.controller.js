@@ -4,14 +4,15 @@ const Character = db.character;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new StoryCharacter
-exports.create = (req, res) => {
-
+exports.createStory = (req, res) => {
   // Create a StoryCharacter
   const storyCharacter = {
     storyId: req.body.storyId,
     characterId: req.body.characterId ? req.body.characterId : null,
     characterId: req.body.characterId,
   };
+
+  console.log(req.body);
   // Save StoryCharacter in the database
   StoryCharacter.create(storyCharacter)
     .then((data) => {
@@ -37,7 +38,7 @@ exports.findAll = (req, res) => {
       }
     : null;
 
-    StoryCharacter.findAll({ where: condition })
+  StoryCharacter.findAll({ where: condition })
     .then((data) => {
       res.send(data);
     })
@@ -74,7 +75,6 @@ exports.findAllForStory = (req, res) => {
       });
     });
 };
-
 
 // Find a single RecipeIngredient with an id
 exports.findOne = (req, res) => {

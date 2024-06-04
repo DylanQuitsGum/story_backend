@@ -2,65 +2,12 @@ const db = require("../models");
 const Story = db.story;
 const Op = db.Sequelize.Op;
 
-const { CohereClient } = require("cohere-ai");
-const { v1: uuidv1, v4: uuidv4 } = require("uuid");
-
-exports.createStory = async (req, res) => {
-  console.log(req.body);
-
-  if (req.body.preamble == undefined) {
-    const error = new Error("Preamble cannot be empty!");
-    error.statusCode = 400;
-    throw error;
-  }
-  if (req.body.prompt == undefined) {
-    const error = new Error("Prompt cannot be empty!");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  let title = req.body.title == undefined ? "" : req.body.title;
-  const conversationId =
-    req.body.conversationId == undefined ? uuidv4() : req.body.conversationId;
-
-  let cohere = new CohereClient({
-    token: process.env.COHERE_KEY,
-  });
-
-  const chat = await cohere.chat({
-    conversationId: conversationId,
-    preamble: req.body.preamble,
-    message: req.body.prompt,
-  });
-
-  const storyBody = chat.text;
-
-  if (title == "") {
-    const storyTitleChat = await cohere.chat({
-      conversationId: conversationId,
-      message: "What is the title of the story? Just return me the title",
-    });
-
-    title = storyTitleChat.text;
-  }
-
-  const story = {
-    story: storyBody,
-    conversationId: conversationId,
-    title: title,
-  };
-
-  res.status(201).send({
-    response: story,
-  });
-};
-
 // Create and Save a new Story
 exports.create = (req, res) => {
   const { story, conversationId, title } = req.body;
 
   // Validate request
-  if (!story || !conversationId || !title) {
+  if (!story || !title) {
     const error = new Error("Story cannot be empty!");
     error.statusCode = 400;
     return res.status(400).send({
@@ -70,7 +17,7 @@ exports.create = (req, res) => {
 
   // Create a Story
   const newStory = {
-    story,
+    text: story,
     conversationId,
     title,
   };
@@ -81,6 +28,7 @@ exports.create = (req, res) => {
       res.status(201).send(data);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send({
         message: err.message || "Some error occurred while creating the Story.",
       });
