@@ -27,7 +27,15 @@ const run = async () => {
       "ascii"
     );
 
-    connection.query(sql, [true]);
+    connection.query(sql, (queryErr, results) => {
+      if (queryErr) {
+        console.error("Query error:", queryErr.message);
+      } else {
+        console.log("Query results:", results);
+      }
+      connection.end();
+    });
+
     connection.end();
   });
 };
