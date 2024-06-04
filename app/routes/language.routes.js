@@ -7,5 +7,5 @@ module.exports = (app) => {
 
   router.get("/", languages.findAll);
 
-  app.use("/storyapi/languages", [isAuthorized], router);
+  app.use("/api/languages", [isAuthorized], router);
 };

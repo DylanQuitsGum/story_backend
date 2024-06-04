@@ -22,22 +22,9 @@ db.theme = require("./theme.model.js")(sequelize, Sequelize);
 
 db.story = require("./story.model.js")(sequelize, Sequelize);
 db.storyCharacter = require("./storyCharacter.model.js")(sequelize, Sequelize);
-db.session = require("./session.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
 
-// foreign key for session
-db.user.hasMany(
-  db.session,
-  { as: "session" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.session.belongsTo(
-  db.user,
-  { as: "user" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-
-//foreign key for story
+// foreign key for story
 db.user.hasMany(
   db.story,
   { as: "story" },

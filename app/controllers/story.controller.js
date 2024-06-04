@@ -2,44 +2,43 @@ const db = require("../models");
 const Story = db.story;
 const Op = db.Sequelize.Op;
 
-const { CohereClient } = require('cohere-ai');
-const {
-    v1: uuidv1,
-    v4: uuidv4,
-} = require('uuid');
+const { CohereClient } = require("cohere-ai");
+const { v1: uuidv1, v4: uuidv4 } = require("uuid");
 
 exports.createStory = async (req, res) => {
+  console.log(req.body);
 
-  if(req.body.preamble == undefined){
+  if (req.body.preamble == undefined) {
     const error = new Error("Preamble cannot be empty!");
     error.statusCode = 400;
     throw error;
   }
-  if(req.body.prompt == undefined){
+  if (req.body.prompt == undefined) {
     const error = new Error("Prompt cannot be empty!");
     error.statusCode = 400;
     throw error;
   }
 
   let title = req.body.title == undefined ? "" : req.body.title;
-  const conversationId = req.body.conversationId == undefined ? uuidv4() : req.body.conversationId;
+  const conversationId =
+    req.body.conversationId == undefined ? uuidv4() : req.body.conversationId;
 
   let cohere = new CohereClient({
-    token: process.env.COHERE_KEY
+    token: process.env.COHERE_KEY,
   });
 
   const chat = await cohere.chat({
     conversationId: conversationId,
-    preamble : req.body.preamble,
-    message: req.body.prompt
+    preamble: req.body.preamble,
+    message: req.body.prompt,
   });
 
   const storyBody = chat.text;
 
-  if(title == ''){
+  if (title == "") {
     const storyTitleChat = await cohere.chat({
       conversationId: conversationId,
-      message: 'What is the title of the story?',
+      message: "What is the title of the story? Just return me the title",
     });
 
     title = storyTitleChat.text;
@@ -48,37 +47,42 @@ exports.createStory = async (req, res) => {
   const story = {
     story: storyBody,
     conversationId: conversationId,
-    title: title
-  }
+    title: title,
+  };
 
   res.status(201).send({
-    response: story
-  })
+    response: story,
+  });
 };
 
 // Create and Save a new Story
 exports.create = (req, res) => {
+  const { story, conversationId, title } = req.body;
+
   // Validate request
-  if (req.body.story === undefined) {
+  if (!story || !conversationId || !title) {
     const error = new Error("Story cannot be empty!");
     error.statusCode = 400;
-    throw error;
-  } 
+    return res.status(400).send({
+      message: "Bad Request: Invalid Story",
+    });
+  }
 
   // Create a Story
-  const story = {
-    story: req.body.story,
+  const newStory = {
+    story,
+    conversationId,
+    title,
   };
 
   // Save Story in the database
-  Story.create(story)
+  Story.create(newStory)
     .then((data) => {
-      res.send(data);
+      res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Story.",
+        message: err.message || "Some error occurred while creating the Story.",
       });
     });
 };
@@ -94,14 +98,13 @@ exports.findAll = (req, res) => {
       }
     : null;
 
-    Story.findAll({ where: condition, order: [["story", "ASC"]] })
+  Story.findAll({ where: condition, order: [["story", "ASC"]] })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving stories.",
+        message: err.message || "Some error occurred while retrieving stories.",
       });
     });
 };
@@ -173,7 +176,7 @@ exports.delete = (req, res) => {
 
 // Delete all Stories from the database.
 exports.deleteAll = (req, res) => {
-    Story.destroy({
+  Story.destroy({
     where: {},
     truncate: false,
   })

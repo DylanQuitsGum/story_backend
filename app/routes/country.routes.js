@@ -7,5 +7,5 @@ module.exports = (app) => {
 
   router.get("/", countries.findAll);
 
-  app.use("/storyapi/countries", [isAuthorized], router);
+  app.use("/api/countries", [isAuthorized], router);
 };

@@ -3,5 +3,5 @@ module.exports = (app) => {
   var router = require("express").Router();
 
   router.post("/login", login);
-  app.use("/storyapi", router);
+  app.use("/api", router);
 };
