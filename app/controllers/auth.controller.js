@@ -30,9 +30,10 @@ exports.login = async (req, res) => {
 
   //create jwt
   const token = await generateJWT(account);
-  const { firstName, lastName } = account;
+  const { firstName, lastName, id } = account;
 
   let userInfo = {
+    userId: id,
     firstName: firstName,
     lastName: lastName,
     email: email,

@@ -57,22 +57,28 @@ exports.createStory = async (req, res) => {
 
 // Create and Save a new Story
 exports.create = (req, res) => {
+  const { story, conversationId, title } = req.body;
+
   // Validate request
-  if (req.body.story === undefined) {
+  if (!story || !conversationId || !title) {
     const error = new Error("Story cannot be empty!");
     error.statusCode = 400;
-    throw error;
+    return res.status(400).send({
+      message: "Bad Request: Invalid Story",
+    });
   }
 
   // Create a Story
-  const story = {
-    story: req.body.story,
+  const newStory = {
+    story,
+    conversationId,
+    title,
   };
 
   // Save Story in the database
-  Story.create(story)
+  Story.create(newStory)
     .then((data) => {
-      res.send(data);
+      res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
