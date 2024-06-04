@@ -2,7 +2,7 @@ module.exports = (app) => {
   const User = require("../controllers/user.controller.js");
   var router = require("express").Router();
 
-  router.post("/users/", User.create);
+  router.post("/", User.create);
 
-  app.use("/api", router);
+  app.use("/api/users", router);
 };
