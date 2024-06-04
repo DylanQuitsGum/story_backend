@@ -4,10 +4,7 @@ module.exports = (app) => {
   var router = require("express").Router();
 
   // Create a new Story
-  router.post("/", stories.createStory);
-
-  // Save story
-  router.post("/save", stories.create);
+  router.post("/", stories.create);
 
   // Retrieve all Stories
   router.get("/", stories.findAll);

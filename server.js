@@ -61,6 +61,7 @@ require("./app/routes/genre.routes.js")(app);
 require("./app/routes/theme.routes.js")(app);
 require("./app/routes/language.routes.js")(app);
 require("./app/routes/story.routes.js")(app);
+require("./app/routes/ai.routes.js")(app);
 require("./app/routes/character.routes.js")(app);
 
 // set port, listen for requests
