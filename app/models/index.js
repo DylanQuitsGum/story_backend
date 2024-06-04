@@ -28,12 +28,12 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.user.hasMany(
   db.story,
   { as: "story" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  { foreignKey: "userId", as: "stories", onDelete: "CASCADE" }
 );
 db.story.belongsTo(
   db.user,
   { as: "user" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  { foreignKey: "userId", as: "user", onDelete: "CASCADE" }
 );
 
 db.story.hasMany(
