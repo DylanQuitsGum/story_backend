@@ -21,7 +21,7 @@ exports.create = (req, res) => {
   const character = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    role: req.body.role,
+    userId: req.body.userId,
   };
 
   // Save Character in the database
