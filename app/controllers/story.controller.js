@@ -60,18 +60,31 @@ exports.findAll = async (req, res) => {
 };
 
 // Find a single Story with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   const id = req.params.id;
+  const storyId = req.params.storyId;
 
-  Story.findByPk(id)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Error retrieving Story with id=" + id,
-      });
+  console.log("Get user story");
+
+  try {
+    const story = await Story.findOne({
+      where: {
+        id: storyId,
+        userId: id,
+      },
     });
+
+    console.log(story);
+
+    if (story) {
+      return res.status(200).send(story);
+    }
+  } catch (err) {
+    console.error(`Error: ${err}`);
+    return res.status(500).send({
+      message: `Server Error: Unable to retrieve story with id ${id}`,
+    });
+  }
 };
 
 // Update a Story by the id in the request
