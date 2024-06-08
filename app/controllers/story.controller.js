@@ -4,14 +4,27 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Story
 exports.create = (req, res) => {
-  const { story, conversationId, title, userId } = req.body;
+  const {
+    story,
+    conversationId,
+    title,
+    userId,
+    language,
+    country,
+    genre,
+    theme,
+  } = req.body;
 
   // Validate request
   if (!story || !title) {
-    const error = new Error("Story cannot be empty!");
-    error.statusCode = 400;
     return res.status(400).send({
       message: "Bad Request: Invalid Story",
+    });
+  }
+
+  if (!language || !country || !genre || !theme) {
+    return res.status(400).send({
+      message: "Bad Request: Require language, country, genre, theme",
     });
   }
 
@@ -21,6 +34,10 @@ exports.create = (req, res) => {
     conversationId,
     title,
     userId: userId,
+    language,
+    country,
+    genre,
+    theme,
   };
 
   // Save Story in the database

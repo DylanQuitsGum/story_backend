@@ -20,6 +20,22 @@ module.exports = (sequelize, Sequelize) => {
         key: "id",
       },
     },
+    language: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    country: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    genre: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    theme: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   });
   return Story;
 };
