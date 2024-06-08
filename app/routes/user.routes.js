@@ -8,5 +8,6 @@ module.exports = (app) => {
   router.post("/", User.create);
   router.get("/:id/stories", [isAuthorized], Story.findAll);
   router.get("/:id/stories/:storyId", [isAuthorized], Story.findOne);
+  router.delete("/:id/stories/:storyId", Story.delete);
   app.use("/api/users", router);
 };

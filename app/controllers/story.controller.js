@@ -13,6 +13,7 @@ exports.create = (req, res) => {
     country,
     genre,
     theme,
+    pageCount,
   } = req.body;
 
   // Validate request
@@ -22,9 +23,10 @@ exports.create = (req, res) => {
     });
   }
 
-  if (!language || !country || !genre || !theme) {
+  if (!language || !country || !genre || !theme || !pageCount) {
     return res.status(400).send({
-      message: "Bad Request: Require language, country, genre, theme",
+      message:
+        "Bad Request: Require language, country, genre, theme, pageCount",
     });
   }
 
@@ -38,6 +40,7 @@ exports.create = (req, res) => {
     country,
     genre,
     theme,
+    pageCount,
   };
 
   // Save Story in the database
@@ -130,28 +133,30 @@ exports.update = (req, res) => {
 };
 
 // Delete a Story with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   const id = req.params.id;
+  const storyId = req.params.storyId;
 
-  Genre.destroy({
-    where: { id: id },
-  })
-    .then((number) => {
-      if (number == 1) {
-        res.send({
-          message: "Story was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Story with id=${id}. Maybe Story was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Could not delete Story with id=" + id,
-      });
+  console.log(`delete ${id} ${storyId}`);
+
+  try {
+    const result = await Story.destroy({
+      where: {
+        id: storyId,
+      },
     });
+
+    if (result) {
+      return res.status(200).send({
+        message: "Successfully deleted",
+      });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server Error: ${err}`,
+    });
+  }
+  return res.send("ok");
 };
 
 // Delete all Stories from the database.

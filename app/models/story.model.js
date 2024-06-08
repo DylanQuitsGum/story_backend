@@ -36,6 +36,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: true,
     },
+    pageCount: {
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: true,
+    },
   });
   return Story;
 };
