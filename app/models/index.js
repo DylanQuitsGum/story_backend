@@ -39,12 +39,7 @@ db.story.belongsTo(
 db.story.hasMany(
   db.storyCharacter,
   { as: "storyCharacter" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.character.hasMany(
-  db.storyCharacter,
-  { as: "storyCharacter" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
+  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
 );
 
 db.user.hasMany(
