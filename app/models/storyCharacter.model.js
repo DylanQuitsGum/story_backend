@@ -1,8 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
   const StoryCharacter = sequelize.define("storyCharacter", {
-    characterId: {
-      type: Sequelize.INTEGER,
-    },
     firstName: {
       type: Sequelize.STRING,
       allowEmpty: true,

@@ -6,7 +6,13 @@ const { CohereClient } = require("cohere-ai");
 const { v4: uuidv4 } = require("uuid");
 
 exports.generateStory = async (req, res) => {
+  let cohere = new CohereClient({
+    token: process.env.COHERE_KEY,
+  });
+
   console.log(req.body);
+
+  const { preamble, prompt, conversationId } = req.body;
 
   if (req.body.preamble == undefined) {
     const error = new Error("Preamble cannot be empty!");
@@ -19,16 +25,27 @@ exports.generateStory = async (req, res) => {
     throw error;
   }
 
+  //update existing story
+  if (conversationId) {
+    console.log("update", conversationId);
+
+    const updatedStory = await cohere.chat({
+      conversationId: conversationId,
+      preamble: preamble,
+      message: prompt,
+    });
+
+    return res.status(201).send(updatedStory);
+  }
+
   let title = req.body.title == undefined ? "" : req.body.title;
-  const conversationId =
-    req.body.conversationId == undefined ? uuidv4() : req.body.conversationId;
 
-  let cohere = new CohereClient({
-    token: process.env.COHERE_KEY,
-  });
+  const chatId = uuidv4();
 
+  console.log("chatId", chatId);
+  //new story
   const chat = await cohere.chat({
-    conversationId: conversationId,
+    conversationId: chatId,
     preamble: req.body.preamble,
     message: req.body.prompt,
   });
@@ -38,7 +55,7 @@ exports.generateStory = async (req, res) => {
   if (title == "") {
     const storyTitleChat = await cohere.chat({
       conversationId: conversationId,
-      message: "What is the title of the story? Just return me the title",
+      message: "Create the title of this story, I just want the title",
     });
 
     title = storyTitleChat.text;
@@ -46,7 +63,7 @@ exports.generateStory = async (req, res) => {
 
   const story = {
     story: storyBody,
-    conversationId: conversationId,
+    conversationId: chatId,
     title: title,
   };
 

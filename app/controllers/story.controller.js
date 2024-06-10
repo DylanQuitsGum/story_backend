@@ -1,5 +1,6 @@
 const db = require("../models");
 const Story = db.story;
+const StoryCharacter = db.storyCharacter;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Story
@@ -84,8 +85,6 @@ exports.findOne = async (req, res) => {
   const id = req.params.id;
   const storyId = req.params.storyId;
 
-  console.log("Get user story");
-
   try {
     const story = await Story.findOne({
       where: {
@@ -93,8 +92,6 @@ exports.findOne = async (req, res) => {
         userId: id,
       },
     });
-
-    console.log(story);
 
     if (story) {
       return res.status(200).send(story);
@@ -110,9 +107,35 @@ exports.findOne = async (req, res) => {
 // Update a Story by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  const storyId = req.params.storyId;
 
-  Story.update(req.body, {
-    where: { id: id },
+  const {
+    story,
+    conversationId,
+    title,
+    userId,
+    language,
+    country,
+    genre,
+    theme,
+    pageCount,
+  } = req.body;
+
+  // Create a Story
+  const newStory = {
+    text: story,
+    conversationId,
+    title,
+    userId: userId,
+    language,
+    country,
+    genre,
+    theme,
+    pageCount,
+  };
+
+  Story.update(newStory, {
+    where: { id: storyId },
   })
     .then((num) => {
       if (num == 1) {
@@ -137,12 +160,16 @@ exports.delete = async (req, res) => {
   const id = req.params.id;
   const storyId = req.params.storyId;
 
-  console.log(`delete ${id} ${storyId}`);
-
   try {
     const result = await Story.destroy({
       where: {
         id: storyId,
+      },
+    });
+
+    await StoryCharacter.destroy({
+      where: {
+        storyId: storyId,
       },
     });
 
