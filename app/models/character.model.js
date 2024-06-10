@@ -8,6 +8,14 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    userId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: "users", // This refers to the table name
+        key: "id",
+      },
+    },
   });
   return Character;
 };
