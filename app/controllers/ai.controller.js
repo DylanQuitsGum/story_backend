@@ -54,7 +54,7 @@ exports.generateStory = async (req, res) => {
 
   if (title == "") {
     const storyTitleChat = await cohere.chat({
-      conversationId: conversationId,
+      conversationId: chatId,
       message: "Create the title of this story, I just want the title",
     });
 
