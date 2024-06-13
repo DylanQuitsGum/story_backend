@@ -4,6 +4,32 @@ const Op = db.Sequelize.Op;
 const { encryptPassword } = require("./../authentication/password-manager");
 const { generateJWT } = require("./../authentication/authentication");
 
+exports.createAdmin = async () => {
+
+  let account = await User.findOne({
+    where: {
+      email: 'admin@admin.com',
+    },
+  });
+
+  if (account) {
+    return;
+  }
+
+  const hashedPassword = await encryptPassword('admin');
+
+  const user = {
+    firstName: 'admin',
+    lastName: 'admin',
+    email: 'admin@admin.com',
+    role: 'admin',
+    password: hashedPassword,
+  };
+
+  const createdUser = await User.create(user);
+  const token = await generateJWT(createdUser);
+};
+
 // Create and Save a new User
 exports.create = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;

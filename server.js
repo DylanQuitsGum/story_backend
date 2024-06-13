@@ -7,7 +7,10 @@ const db = require("./app/models");
 
 const app = express();
 
+const userController = require('./app/controllers/user.controller.js');
+
 const run = async () => {
+  userController.createAdmin();
   const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
