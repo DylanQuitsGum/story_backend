@@ -23,5 +23,5 @@ module.exports = (app) => {
   // Delete all Characters
   router.delete("/", characters.deleteAll);
 
-  app.use("/storyapi/characters", [isAuthorized], router);
+  app.use("/api/characters", router);
 };

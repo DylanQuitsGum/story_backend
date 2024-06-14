@@ -1,132 +1,141 @@
 const db = require("../models");
 const Story = db.story;
+const StoryCharacter = db.storyCharacter;
 const Op = db.Sequelize.Op;
-
-const { CohereClient } = require('cohere-ai');
-const {
-    v1: uuidv1,
-    v4: uuidv4,
-} = require('uuid');
-
-exports.createStory = async (req, res) => {
-
-  if(req.body.preamble == undefined){
-    const error = new Error("Preamble cannot be empty!");
-    error.statusCode = 400;
-    throw error;
-  }
-  if(req.body.prompt == undefined){
-    const error = new Error("Prompt cannot be empty!");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  let title = req.body.title == undefined ? "" : req.body.title;
-  const conversationId = req.body.conversationId == undefined ? uuidv4() : req.body.conversationId;
-
-  let cohere = new CohereClient({
-    token: process.env.COHERE_KEY
-  });
-
-  const chat = await cohere.chat({
-    conversationId: conversationId,
-    preamble : req.body.preamble,
-    message: req.body.prompt
-  });
-
-  const storyBody = chat.text;
-
-  if(title == ''){
-    const storyTitleChat = await cohere.chat({
-      conversationId: conversationId,
-      message: 'What is the title of the story?',
-    });
-
-    title = storyTitleChat.text;
-  }
-
-  const story = {
-    story: storyBody,
-    conversationId: conversationId,
-    title: title
-  }
-
-  res.status(201).send({
-    response: story
-  })
-};
 
 // Create and Save a new Story
 exports.create = (req, res) => {
+  const {
+    story,
+    conversationId,
+    title,
+    userId,
+    language,
+    country,
+    genre,
+    theme,
+    pageCount,
+  } = req.body;
+
   // Validate request
-  if (req.body.story === undefined) {
-    const error = new Error("Story cannot be empty!");
-    error.statusCode = 400;
-    throw error;
-  } 
+  if (!story || !title) {
+    return res.status(400).send({
+      message: "Bad Request: Invalid Story",
+    });
+  }
+
+  if (!language || !country || !genre || !theme || !pageCount) {
+    return res.status(400).send({
+      message:
+        "Bad Request: Require language, country, genre, theme, pageCount",
+    });
+  }
 
   // Create a Story
-  const story = {
-    story: req.body.story,
+  const newStory = {
+    text: story,
+    conversationId,
+    title,
+    userId: userId,
+    language,
+    country,
+    genre,
+    theme,
+    pageCount,
   };
 
   // Save Story in the database
-  Story.create(story)
+  Story.create(newStory)
     .then((data) => {
-      res.send(data);
+      res.status(201).send(data);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Story.",
+        message: err.message || "Some error occurred while creating the Story.",
       });
     });
 };
 
-// Retrieve all Genres from the database.
-exports.findAll = (req, res) => {
-  const story = req.query.storyId;
-  var condition = storyId
-    ? {
-        id: {
-          [Op.like]: `%${storyId}%`,
-        },
-      }
-    : null;
+// Retrieve all Stories
+exports.findAll = async (req, res) => {
+  const id = req.params.id;
 
-    Story.findAll({ where: condition, order: [["story", "ASC"]] })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving stories.",
-      });
+  try {
+    const stories = await Story.findAll({
+      where: {
+        userId: {
+          [Op.eq]: id,
+        },
+      },
     });
+
+    if (stories) {
+      return res.status(200).send(stories);
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server Error: ${err}`,
+    });
+  }
 };
 
 // Find a single Story with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   const id = req.params.id;
+  const storyId = req.params.storyId;
 
-  Story.findByPk(id)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Error retrieving Story with id=" + id,
-      });
+  try {
+    const story = await Story.findOne({
+      where: {
+        id: storyId,
+        userId: id,
+      },
     });
+
+    if (story) {
+      return res.status(200).send(story);
+    }
+  } catch (err) {
+    console.error(`Error: ${err}`);
+    return res.status(500).send({
+      message: `Server Error: Unable to retrieve story with id ${id}`,
+    });
+  }
 };
 
 // Update a Story by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  const storyId = req.params.storyId;
 
-  Story.update(req.body, {
-    where: { id: id },
+  const {
+    story,
+    conversationId,
+    title,
+    userId,
+    language,
+    country,
+    genre,
+    theme,
+    pageCount,
+  } = req.body;
+
+  // Create a Story
+  const newStory = {
+    text: story,
+    conversationId,
+    title,
+    userId: userId,
+    language,
+    country,
+    genre,
+    theme,
+    pageCount,
+  };
+
+  Story.update(newStory, {
+    where: { id: storyId },
   })
     .then((num) => {
       if (num == 1) {
@@ -147,33 +156,39 @@ exports.update = (req, res) => {
 };
 
 // Delete a Story with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   const id = req.params.id;
+  const storyId = req.params.storyId;
 
-  Genre.destroy({
-    where: { id: id },
-  })
-    .then((number) => {
-      if (number == 1) {
-        res.send({
-          message: "Story was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Story with id=${id}. Maybe Story was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Could not delete Story with id=" + id,
-      });
+  try {
+    const result = await Story.destroy({
+      where: {
+        id: storyId,
+      },
     });
+
+    await StoryCharacter.destroy({
+      where: {
+        storyId: storyId,
+      },
+    });
+
+    if (result) {
+      return res.status(200).send({
+        message: "Successfully deleted",
+      });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server Error: ${err}`,
+    });
+  }
+  return res.send("ok");
 };
 
 // Delete all Stories from the database.
 exports.deleteAll = (req, res) => {
-    Story.destroy({
+  Story.destroy({
     where: {},
     truncate: false,
   })

@@ -1,9 +1,25 @@
 module.exports = (sequelize, Sequelize) => {
-    const StoryCharacter = sequelize.define("storyCharacter", {
-      role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      }
-    });
-    return StoryCharacter;
-  };
+  const StoryCharacter = sequelize.define("storyCharacter", {
+    firstName: {
+      type: Sequelize.STRING,
+      allowEmpty: true,
+    },
+    lastName: {
+      type: Sequelize.STRING,
+      allowEmpty: true,
+    },
+    role: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    storyId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: "stories", // This refers to the table name
+        key: "id",
+      },
+    },
+  });
+  return StoryCharacter;
+};

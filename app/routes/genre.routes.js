@@ -1,11 +1,25 @@
-const { isAuthorized } = require("../authentication/authentication");
-
 module.exports = (app) => {
   const genres = require("../controllers/genre.controller.js");
 
   var router = require("express").Router();
 
+  // Create a new Genre
+  router.post("/", genres.create);
+
+  // Retrieve all Genres
   router.get("/", genres.findAll);
 
-  app.use("/storyapi/genres", [isAuthorized], router);
+  // Retrieve a single Genre with id
+  router.get("/:id", genres.findOne);
+
+  // Update a Genre with id
+  router.put("/:id", genres.update);
+
+  // Delete a Genre with id
+  router.delete("/:id", genres.delete);
+
+  // Delete all Genre
+  router.delete("/", genres.deleteAll);
+
+  app.use("/api/genres", router);
 };

@@ -3,51 +3,43 @@ const StoryCharacter = db.storyCharacter;
 const Character = db.character;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new StoryCharacter
-exports.create = (req, res) => {
+exports.createStoryCharacter = async (req, res) => {
+  const userId = req.params.id;
+  const storyId = req.params.storyId;
+  console.log(req.body);
 
-  // Create a StoryCharacter
-  const storyCharacter = {
-    storyId: req.body.storyId,
-    characterId: req.body.characterId ? req.body.characterId : null,
-    characterId: req.body.characterId,
-  };
-  // Save StoryCharacter in the database
-  StoryCharacter.create(storyCharacter)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while creating the StoryCharacter.",
-      });
+  try {
+    const result = await StoryCharacter.bulkCreate(req.body);
+
+    console.log(result);
+    res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server Error: ${err}`,
     });
+  }
 };
 
 // Retrieve all StoryCharacter from the database.
-exports.findAll = (req, res) => {
-  const storyCharacterId = req.query.storyCharacterId;
-  var condition = storyCharacterId
-    ? {
-        id: {
-          [Op.like]: `%${storyCharacterId}%`,
-        },
-      }
-    : null;
+exports.findAll = async (req, res) => {
+  console.log(req);
+  const storyId = req.params.storyId;
 
-    StoryCharacter.findAll({ where: condition })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while retrieving StoryCharacters.",
-      });
+  try {
+    const storyCharacters = await StoryCharacter.findAll({
+      where: {
+        storyId: storyId,
+      },
     });
+
+    if (storyCharacters) {
+      return res.status(200).send(storyCharacters);
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server error: ${err}`,
+    });
+  }
 };
 
 exports.findAllForStory = (req, res) => {
@@ -75,7 +67,6 @@ exports.findAllForStory = (req, res) => {
     });
 };
 
-
 // Find a single RecipeIngredient with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
@@ -88,31 +79,6 @@ exports.findOne = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Error retrieving RecipeIngredient with id=" + id,
-      });
-    });
-};
-
-// Update a RecipeIngredient by the id in the request
-exports.update = (req, res) => {
-  const id = req.params.id;
-
-  RecipeIngredient.update(req.body, {
-    where: { id: id },
-  })
-    .then((number) => {
-      if (number == 1) {
-        res.send({
-          message: "RecipeIngredient was updated successfully.",
-        });
-      } else {
-        res.send({
-          message: `Cannot update RecipeIngredient with id=${id}. Maybe RecipeIngredient was not found or req.body is empty!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Error updating RecipeIngredient with id=" + id,
       });
     });
 };
@@ -144,21 +110,29 @@ exports.delete = (req, res) => {
 };
 
 // Delete all RecipeIngredients from the database.
-exports.deleteAll = (req, res) => {
-  RecipeIngredient.destroy({
-    where: {},
-    truncate: false,
-  })
-    .then((number) => {
-      res.send({
-        message: `${number} RecipeIngredients were deleted successfully!`,
-      });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while removing all recipeIngredients.",
-      });
+exports.deleteAll = async (req, res) => {
+  console.log("delete all story characters");
+  const storyId = req.params.storyId;
+
+  if (!storyId) {
+    return res.status(400).send({
+      message: `Bad Argument: need to provide storyId`,
     });
+  }
+
+  try {
+    const result = await StoryCharacter.destroy({
+      where: {
+        storyId: storyId,
+      },
+    });
+
+    return res.status(200).send({
+      message: `Delete successfully`,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      message: `Server Error: ${err}`,
+    });
+  }
 };

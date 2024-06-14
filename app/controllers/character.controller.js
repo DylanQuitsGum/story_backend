@@ -3,55 +3,61 @@ const Character = db.character;
 
 // Create and Save a new Character
 exports.create = (req, res) => {
+  const { firstName, lastName, userId } = req.body;
+
   // Validate request
   if (!req.body.firstName) {
     res.status(400).send({
-      message: "First Name can not be empty!"
+      message: "First Name can not be empty!",
     });
     return;
   }
   if (!req.body.lastName) {
     res.status(400).send({
-      message: "Last Name can not be empty!"
+      message: "Last Name can not be empty!",
     });
     return;
   }
 
   // Create a Character
   const character = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    role: req.body.role,
+    firstName: firstName,
+    lastName: lastName,
+    userId: userId,
   };
+
+  console.log(character);
 
   // Save Character in the database
   Character.create(character)
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Character."
+          err.message || "Some error occurred while creating the Character.",
       });
     });
 };
 
 // Retrieve all Characters from the database.
-exports.findAll = (req, res) => {
-  const firstName = req.query.firstName;
-  var condition = firstName ? { firstName: { [Op.like]: `%${firstName}%` } } : null;
+exports.findAll = async (req, res) => {
+  const id = req.params.id;
 
-  Character.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving characters."
-      });
+  try {
+    const characters = await Character.findAll({
+      where: { userId: id },
     });
+
+    if (characters) {
+      res.send(characters);
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: `Server Error: ${err}`,
+    });
+  }
 };
 
 // Find a single Character with an id
@@ -59,18 +65,18 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
 
   Character.findByPk(id)
-    .then(data => {
+    .then((data) => {
       if (data) {
         res.send(data);
       } else {
         res.status(404).send({
-          message: `Cannot find Character with id=${id}.`
+          message: `Cannot find Character with id=${id}.`,
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving Character with id=" + id
+        message: "Error retrieving Character with id=" + id,
       });
     });
 };
@@ -80,67 +86,68 @@ exports.update = (req, res) => {
   const id = req.params.id;
 
   Character.update(req.body, {
-    where: { id: id }
+    where: { id: id },
   })
-    .then(num => {
+    .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Character was updated successfully."
+          message: "Character was updated successfully.",
         });
       } else {
         res.send({
-          message: `Cannot update Character with id=${id}. Maybe Character was not found or req.body is empty!`
+          message: `Cannot update Character with id=${id}. Maybe Character was not found or req.body is empty!`,
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: "Error updating Character with id=" + id
+        message: "Error updating Character with id=" + id,
       });
     });
 };
 
 // Delete a Character with the specified id in the request
 exports.delete = (req, res) => {
-  const id = req.params.id;
+  const user = req.params.id;
+  const characterId = req.params.characterId;
 
   Character.destroy({
-    where: { id: id }
+    where: { id: characterId },
   })
-    .then(num => {
+    .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Character was deleted successfully!"
+          message: "Character was deleted successfully!",
         });
       } else {
         res.send({
-          message: `Cannot delete Character with id=${id}. Maybe Character was not found!`
+          message: `Cannot delete Character with id=${id}. Maybe Character was not found!`,
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Character with id=" + id
+        message: "Could not delete Character with id=" + id,
       });
     });
 };
 
 // Delete all Characters from the database.
 exports.deleteAll = (req, res) => {
+  const userId = req.params.id;
+
   Character.destroy({
-    where: {},
-    truncate: false
+    where: {
+      userId: userId,
+    },
   })
-    .then(nums => {
+    .then((nums) => {
       res.send({ message: `${nums} Characters were deleted successfully!` });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all characters."
+          err.message || "Some error occurred while removing all characters.",
       });
     });
 };
-
-
-

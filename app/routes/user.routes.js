@@ -1,25 +1,40 @@
+const { isAuthorized } = require("../authentication/authentication");
+
 module.exports = (app) => {
   const User = require("../controllers/user.controller.js");
-  const { isAuthorized } = require("../authentication/authentication");
+  const Story = require("../controllers/story.controller.js");
+  const Character = require("../controllers/character.controller.js");
+  const StoryCharacter = require("../controllers/storycharacter.controller.js");
+
   var router = require("express").Router();
 
-  // Create a new User
-  router.post("/users/", User.create);
+  router.post("/", User.create);
 
-  // Retrieve all Users
-  router.get("/users/", User.findAll);
+  router.get("/:id/stories", [isAuthorized], Story.findAll);
+  router.get("/:id/stories/:storyId", [isAuthorized], Story.findOne);
+  router.put("/:id/stories/:storyId", [isAuthorized], Story.update);
+  router.delete("/:id/stories/:storyId", Story.delete);
 
-  // Retrieve a single User with id
-  router.get("/users/:id", User.findOne);
+  router.get("/:id/characters", [isAuthorized], Character.findAll);
+  router.get("/:id/characters", [isAuthorized], Character.create);
+  router.delete("/:id/characters", [isAuthorized], Character.deleteAll);
+  router.delete(
+    "/:id/characters/:characterId",
+    [isAuthorized],
+    Character.delete
+  );
 
-  // Update a User with id
-  router.put("/users/:id", [isAuthorized], User.update);
+  router.post(
+    "/:id/stories/:storyId/characters",
+    [isAuthorized],
+    StoryCharacter.createStoryCharacter
+  );
+  router.get(
+    "/:id/stories/:storyId/characters",
+    [isAuthorized],
+    StoryCharacter.findAll
+  );
 
-  // Delete a User with id
-  router.delete("/users/:id", [isAuthorized], User.delete);
-
-  // Delete all User
-  router.delete("/users/", [isAuthorized], User.deleteAll);
-
-  app.use("/storyapi", router);
+  router.delete("/:id/stories/:storyId/characters", StoryCharacter.deleteAll);
+  app.use("/api/users", router);
 };
