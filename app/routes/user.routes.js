@@ -16,6 +16,13 @@ module.exports = (app) => {
   router.delete("/:id/stories/:storyId", Story.delete);
 
   router.get("/:id/characters", [isAuthorized], Character.findAll);
+  router.get("/:id/characters", [isAuthorized], Character.create);
+  router.delete("/:id/characters", [isAuthorized], Character.deleteAll);
+  router.delete(
+    "/:id/characters/:characterId",
+    [isAuthorized],
+    Character.delete
+  );
 
   router.post(
     "/:id/stories/:storyId/characters",

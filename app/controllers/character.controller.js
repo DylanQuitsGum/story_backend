@@ -3,6 +3,8 @@ const Character = db.character;
 
 // Create and Save a new Character
 exports.create = (req, res) => {
+  const { firstName, lastName, userId } = req.body;
+
   // Validate request
   if (!req.body.firstName) {
     res.status(400).send({
@@ -19,10 +21,12 @@ exports.create = (req, res) => {
 
   // Create a Character
   const character = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    userId: req.body.userId,
+    firstName: firstName,
+    lastName: lastName,
+    userId: userId,
   };
+
+  console.log(character);
 
   // Save Character in the database
   Character.create(character)
@@ -104,10 +108,11 @@ exports.update = (req, res) => {
 
 // Delete a Character with the specified id in the request
 exports.delete = (req, res) => {
-  const id = req.params.id;
+  const user = req.params.id;
+  const characterId = req.params.characterId;
 
   Character.destroy({
-    where: { id: id },
+    where: { id: characterId },
   })
     .then((num) => {
       if (num == 1) {
@@ -129,9 +134,12 @@ exports.delete = (req, res) => {
 
 // Delete all Characters from the database.
 exports.deleteAll = (req, res) => {
+  const userId = req.params.id;
+
   Character.destroy({
-    where: {},
-    truncate: false,
+    where: {
+      userId: userId,
+    },
   })
     .then((nums) => {
       res.send({ message: `${nums} Characters were deleted successfully!` });
