@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Disable SSL validation (not recommended)
+
 require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
@@ -5,7 +7,6 @@ const fs = require("fs");
 const cors = require("cors");
 const db = require("./app/models");
 const https = require("https");
-
 const app = express();
 
 const run = async () => {
@@ -65,21 +66,11 @@ require("./app/routes/story.routes.js")(app);
 require("./app/routes/ai.routes.js")(app);
 require("./app/routes/character.routes.js")(app);
 
-// SSLCertificateFile /etc/ssl/certs/selfsigned.crt
-// SSLCertificateKeyFile /etc/ssl/private/selfsigned.key
-
-const httpsOptions = {
-  key: fs.readFileSync("/etc/ssl/private/selfsigned.key"), // Update path to your private key
-  cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"), // Update path to your certificate
-};
-
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
 
-const httpsServer = https.createServer(httpsOptions, app);
-
 if (process.env.NODE_ENV !== "test") {
-  httpsServer.listen(PORT, () => {
+  app.listen(PORT, () => {
     console.log(`Server is running on HTTPS port ${PORT}.`);
   });
 }
