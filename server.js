@@ -69,23 +69,26 @@ require("./app/routes/character.routes.js")(app);
 
 // Load SSL certificate and key
 // Load SSL certificate and key
+
+// Prod
+// const options = {
+//   key: fs.readFileSync("/etc/ssl/private/selfsigned.key"),
+//   cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"),
+// };
+
+// Dev
 const options = {
-  key: fs.readFileSync("/etc/ssl/private/selfsigned.key"),
-  cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"),
+  key: fs.readFileSync("./selfsigned.key"),
+  cert: fs.readFileSync("./selfsigned.crt"),
 };
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
 
 if (process.env.NODE_ENV !== "test") {
-  // Create an HTTPS server
-  https.createServer(options, app).listen(PORT, () => {
+  app.listen(PORT, () => {
     console.log(`Server is running on HTTPS port ${PORT}.`);
   });
-
-  // app.listen(PORT, () => {
-  //   console.log(`Server is running on HTTPS port ${PORT}.`);
-  // });
 }
 
 module.exports = app;
