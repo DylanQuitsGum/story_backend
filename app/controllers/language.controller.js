@@ -39,7 +39,7 @@ exports.findAll = (req, res) => {
   Language.findAll({ where: condition })
     .then((data) => {
       res.setHeader("Content-Type", "application/json");
-      res.send(data);
+      res.json(data);
     })
     .catch((err) => {
       res.status(500).send({
