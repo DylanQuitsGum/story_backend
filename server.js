@@ -67,21 +67,6 @@ require("./app/routes/story.routes.js")(app);
 require("./app/routes/ai.routes.js")(app);
 require("./app/routes/character.routes.js")(app);
 
-// Load SSL certificate and key
-// Load SSL certificate and key
-
-// Prod
-// const options = {
-//   key: fs.readFileSync("/etc/ssl/private/selfsigned.key"),
-//   cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"),
-// };
-
-// Dev
-const options = {
-  key: fs.readFileSync("./selfsigned.key"),
-  cert: fs.readFileSync("./selfsigned.crt"),
-};
-
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
 
