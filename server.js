@@ -7,6 +7,7 @@ const fs = require("fs");
 const cors = require("cors");
 const db = require("./app/models");
 const https = require("https");
+const http = require("http");
 const app = express();
 
 const run = async () => {
@@ -66,13 +67,25 @@ require("./app/routes/story.routes.js")(app);
 require("./app/routes/ai.routes.js")(app);
 require("./app/routes/character.routes.js")(app);
 
+// Load SSL certificate and key
+// Load SSL certificate and key
+const options = {
+  key: fs.readFileSync("/etc/ssl/private/selfsigned.key"),
+  cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"),
+};
+
 // set port, listen for requests
 const PORT = process.env.PORT || 3201;
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
+  // Create an HTTPS server
+  https.createServer(options, app).listen(PORT, () => {
     console.log(`Server is running on HTTPS port ${PORT}.`);
   });
+
+  // app.listen(PORT, () => {
+  //   console.log(`Server is running on HTTPS port ${PORT}.`);
+  // });
 }
 
 module.exports = app;
